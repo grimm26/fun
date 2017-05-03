@@ -1,7 +1,7 @@
 #!/user/bin/env python3
 
 class Keypad:
-    NEIGHBORS = {
+    NUMERIC_NEIGHBORS = {
             "one": {
                 "D": "four",
                 "R": "two"
@@ -45,17 +45,86 @@ class Keypad:
                 "L": "eight"
                 }
             }
+    GOOFY_NEIGHBORS = {
+            "one": {
+                "D": "three"
+                },
+            "two": {
+                "D": "six",
+                "R": "three"
+                },
+            "three": {
+                "U": "one",
+                "D": "seven",
+                "R": "four",
+                "L": "two"
+                },
+            "four": {
+                "D": "eight",
+                "L": "three"
+                },
+            "five": {
+                "R": "six"
+                },
+            "six": {
+                "U": "two",
+                "D": "A",
+                "R": "seven",
+                "L": "five"
+                },
+            "seven": {
+                "U": "three",
+                "D": "B",
+                "R": "eight",
+                "L": "six"
+                },
+            "eight": {
+                "U": "four",
+                "D": "C",
+                "R": "nine",
+                "L": "seven"
+                },
+            "nine": {
+                "L": "eight"
+                },
+            "A": {
+                "U": "six",
+                "R": "B",
+                },
+            "B": {
+                "U": "seven",
+                "R": "C",
+                "L": "A",
+                "D": "D"
+                },
+            "C": {
+                "U": "eight",
+                "L": "B"
+                },
+            "D": {
+                "U": "B"
+                }
+            }
 
-
-    def __init__(self, button="five"):
-        self.button = button
+    def __init__(self, layout="numeric"):
+        self.button = "five"
+        self.layout = layout
 
     def move(self, direction):
-        self.button = self.neighbor(direction)
+        if self.layout == "numeric":
+            self.button = self.numeric_neighbor(direction)
+        elif self.layout == "goofy":
+            self.button = self.goofy_neighbor(direction)
 
-    def neighbor(self, direction):
-        if direction in self.NEIGHBORS[self.button]:
-            return self.NEIGHBORS[self.button][direction]
+    def numeric_neighbor(self, direction):
+        if direction in self.NUMERIC_NEIGHBORS[self.button]:
+            return self.NUMERIC_NEIGHBORS[self.button][direction]
+        else:
+            return self.button
+
+    def goofy_neighbor(self, direction):
+        if direction in self.GOOFY_NEIGHBORS[self.button]:
+            return self.GOOFY_NEIGHBORS[self.button][direction]
         else:
             return self.button
 
