@@ -19,10 +19,16 @@ sub fancy_count_tls_addrs {
   my $count = 0;
   foreach my $addr (@$rl_addrs) {
     if ($addr =~ /
-      (?=^(?:(?!.*\[\w*(\w)(?!\1)(\w)(?=\2\1)\w*\]).)*$) # No bracketed ABBA behind
+      (?= # positive lookahead
+        ^
+          (?: # group
+            (?!.*\[\w*(\w)(?!\1)(\w)(?=\2\1)\w*\]). # negative lookahead
+          )*
+        $ # No bracketed ABBA
+      )
       .* # anything
       (\w)(?!\3)(\w)(?=\4\3)(?!\w+\]) # ABBA!
-      (?!.*\[\w*(\w)(?!\5)(\w)(?=\6\5)\w*\]) # No bracketed ABBA ahead
+      (?!.*\[\w*(\w)(?!\5)(\w)(?=\6\5)\w*\]) # No bracketed ABBA 
       /x) {
       $count++;
     }
@@ -36,16 +42,13 @@ sub count_ssl_addrs {
 sub read_file {
   my $file = shift;
 
-  my @addrs;
   open IN, $file or die "Could not open $file to read: $!\n";
-  while(<IN>) {
-    chomp;
-    push @addrs, $_;
-  }
+  my @lines = <IN>;
   close IN;
-  return \@addrs;
+  return \@lines;
 }
 
+# clunky
 sub count_tls_addrs {
   my $rl_addrs = shift;
 
